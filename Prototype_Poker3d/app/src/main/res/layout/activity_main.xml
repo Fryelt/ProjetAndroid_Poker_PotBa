@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,4 +8,105 @@
 
 
 
-</android.support.constraint.LinearLayout>
+    <RelativeLayout
+        android:id="@+id/MenuP"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:background="@color/fondMenu"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
+
+
+        <TextView
+            android:id="@+id/TitreM"
+            android:text="@string/TitreMenu"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5sp"
+            android:textSize="17sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/AjoutM"
+            android:layout_marginTop="5sp"
+            android:layout_marginStart="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/AjoutMenu"
+            android:textSize="14sp"
+            android:layout_below="@id/TitreM" />
+
+        <Button
+            android:id="@+id/Test1"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:text="@string/Test1"
+            android:textSize="10sp"
+            android:layout_below="@id/AjoutM" />
+
+        <Button
+            android:id="@+id/Test5"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:text="@string/Test5"
+            android:textSize="10sp"
+            android:layout_toRightOf="@id/Test1"
+            android:layout_below="@id/AjoutM"/>
+
+        <TextView
+            android:id="@+id/SuppresionM"
+            android:layout_marginTop="5sp"
+            android:layout_marginStart="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/SuppresionMenu"
+            android:textSize="14sp"
+            android:layout_below="@id/Test1"/>
+
+        <Button
+            android:id="@+id/Test2"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:text="@string/Test2"
+            android:textSize="10sp"
+            android:layout_below="@id/SuppresionM"/>
+
+        <ImageButton
+            android:id="@+id/Test3"
+            android:src="@drawable/fleche"
+            android:background="@null"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="5dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"/>
+
+        <ImageButton
+            android:id="@+id/Test4"
+            android:src="@drawable/fleche2"
+            android:background="@null"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="5dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"/>
+
+    </RelativeLayout>
+
+
+    <info.dicj.prototype_poker3d.PrototypeGLSurfaceView
+        android:id="@+id/PGLVue"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_toEndOf="@id/MenuP"/>
+
+</RelativeLayout>

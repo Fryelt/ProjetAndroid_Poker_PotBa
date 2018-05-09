@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 
 import info.dicj.prototype_poker3d.R;
+import info.dicj.prototype_poker3d.util.Couleur;
 
 /**
  * Created by PotBa1632703 on 2018-04-02.
@@ -25,9 +26,9 @@ public class ColorShaderProgram extends ShaderProgram{
         aColorLocation = GLES20.glGetAttribLocation(program, A_Color);
     }
 
-    public void setUniforms(float[] matrice, float r, float g, float b){
+    public void setUniforms(float[] matrice, Couleur cl){
         GLES20.glUniformMatrix4fv(uMatrixLocation, 1, false, matrice, 0);
-        GLES20.glUniform4f(uColorLocation, r, g, b, 1f);
+        GLES20.glUniform4f(uColorLocation, cl.cr, cl.cg, cl.cb, 1f);
     }
 
     public int getPosAttribLocation(){

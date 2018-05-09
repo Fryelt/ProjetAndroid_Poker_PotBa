@@ -1,26 +1,45 @@
 package info.dicj.prototype_poker3d;
 
-import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 
 public class PrototypeGLActivity extends AppCompatActivity {
     private PrototypeGLSurfaceView GLVue;
+    private Button bouton;
     boolean checkRender = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        GLVue = new PrototypeGLSurfaceView(this);
+        setContentView(R.layout.activity_main);
+
+        PrototypeGLSurfaceView K = (PrototypeGLSurfaceView)this.findViewById(R.id.PGLVue);
+        GLVue = K;
         checkRender = true;
 
-        GLVue.setRenderer(GLVue.mRenderer);
-        setContentView(GLVue);
-        // P.179 !!
+        bouton = (Button)findViewById(R.id.Test1);
+        bouton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                GLVue.mRenderer.ajoutCarte();
+            }
+        });
+
+        bouton = (Button)findViewById(R.id.Test2);
+        bouton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                GLVue.mRenderer.supprimListe();
+            }
+        });
+
+        bouton = (Button)findViewById(R.id.Test5);
+        bouton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                GLVue.mRenderer.ajoutCube();
+            }
+        });
     }
     @Override
     protected void onPause(){
@@ -36,5 +55,7 @@ public class PrototypeGLActivity extends AppCompatActivity {
             GLVue.onResume();
         }
     }
+
+
 
 }

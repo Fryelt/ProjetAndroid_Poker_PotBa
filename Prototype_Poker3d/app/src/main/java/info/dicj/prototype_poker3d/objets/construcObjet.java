@@ -12,9 +12,12 @@ import info.dicj.prototype_poker3d.util.Geometrie;
  */
 
 
-public class consObjet {
+public class construcObjet {
     interface commandeEcriture {
         void ecriture();
+    }
+    private construcObjet(int tailleVertices){
+        donneeVertex = new float[tailleVertices * nbrFloatVertex];
     }
     static class GeneratedData{
         final float[] donneeVertex;
@@ -33,7 +36,7 @@ public class consObjet {
     static GeneratedData creationJeton(Geometrie.Cylindre jeton, int nbrPoints){
         int taille = tailleCercleVertices(nbrPoints) + tailleCylindreOuvertVertices(nbrPoints);
 
-        consObjet constructeur = new consObjet(taille);
+        construcObjet constructeur = new construcObjet(taille);
 
         Geometrie.Cercle topJeton = new Geometrie.Cercle(jeton.centre.mouvementY(jeton.hauteur/ 2f), jeton.rayon);
 
@@ -41,6 +44,10 @@ public class consObjet {
         constructeur.annexionCylindreOuvert(jeton, nbrPoints);
 
         return constructeur.build();
+    }
+
+    static Geometrie.Cube creationCube(float longueurCote, float hauteurCote, float profondeurCote, Geometrie.Point point){
+        return new Geometrie.Cube(longueurCote, hauteurCote, profondeurCote, point);
     }
 
     private void annexionCercle(Geometrie.Cercle cercle, int nbrPoints){
@@ -97,9 +104,43 @@ public class consObjet {
         });
     }
 
-    private consObjet(int tailleVertices){
-        donneeVertex = new float[tailleVertices * nbrFloatVertex];
+    private void annexionSphere(){
+
+
+
+        listeEcriture.add(new commandeEcriture() {
+            @Override
+            public void ecriture() {
+                GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 0);
+            }
+        });
     }
+    private void annexionRectangle(Geometrie.Rectangle rectangle){
+
+        final int debutVertex = offset / nbrFloatVertex;
+        final int nbrVertices = 6;
+
+        float[] vertices = new float[] {
+                rectangle.centre.px, rectangle.centre.py, rectangle.centre.pz,
+                rectangle.centre.px - (rectangle.longueur / 2), rectangle.centre.py, rectangle.centre.pz - (rectangle.largeur / 2),
+                rectangle.centre.px + (rectangle.longueur / 2), rectangle.centre.py, rectangle.centre.pz - (rectangle.largeur / 2),
+                rectangle.centre.px + (rectangle.longueur / 2), rectangle.centre.py, rectangle.centre.pz + (rectangle.largeur / 2),
+                rectangle.centre.px - (rectangle.longueur / 2), rectangle.centre.py, rectangle.centre.pz + (rectangle.largeur / 2),
+                rectangle.centre.px - (rectangle.longueur / 2), rectangle.centre.py, rectangle.centre.pz - (rectangle.largeur / 2)};
+
+        for (float v : vertices){
+            donneeVertex[offset++] = v;
+        }
+
+        listeEcriture.add(new commandeEcriture() {
+            @Override
+            public void ecriture() {
+                GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, debutVertex, nbrVertices);
+            }
+        });
+    }
+
+
     private static int tailleCercleVertices(int nbrPoints){
         return 1 + (nbrPoints + 1);
     }

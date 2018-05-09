@@ -2,6 +2,7 @@ package info.dicj.prototype_poker3d;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -10,11 +11,19 @@ import android.view.View;
  */
 
 public class PrototypeGLSurfaceView extends GLSurfaceView {
-    protected final PrototypeGLRenderer mRenderer;
+    protected PrototypeGLRenderer mRenderer;
 
     public PrototypeGLSurfaceView(Context context){
         super(context);
+        setEvents();
+    }
 
+    public PrototypeGLSurfaceView(Context context, AttributeSet attrs){
+        super(context, attrs);
+        setEvents();
+    }
+
+    private void setEvents(){
         // Contexte OpenGL version 2
         setEGLContextClientVersion(2);
 
@@ -47,5 +56,7 @@ public class PrototypeGLSurfaceView extends GLSurfaceView {
                     return false;
             }
         });
+
+        this.setRenderer(mRenderer);
     }
 }

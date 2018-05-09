@@ -7,7 +7,6 @@ package info.dicj.prototype_poker3d.util;
 public class Geometrie {
 
 
-
     public static class Point{
         public final float px, py, pz;
         public Point(float x, float y, float z){
@@ -53,9 +52,21 @@ public class Geometrie {
     }
     public static class Rectangle{
         public final float longueur, largeur;
-        public Rectangle(float longueur, float largeur){
+        public final Point centre;
+        public Rectangle(float longueur, float largeur, Point centre){
             this.longueur = longueur;
             this.largeur = largeur;
+            this.centre = centre;
+        }
+    }
+    public static class Cube{
+        public final float longueur, profondeur, hauteur;
+        public final Point centre;
+        public Cube(float longueur, float profondeur ,float hauteur, Point centre){
+            this.longueur = longueur;
+            this.profondeur = profondeur;
+            this.hauteur = hauteur;
+            this.centre = centre;
         }
     }
     public static class Ray{
