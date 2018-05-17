@@ -30,9 +30,11 @@ public class ShaderHelper {
             return 0;
         }
 
+        //Compilation du shader
         GLES20.glShaderSource(idObjetShader, codeShader);
         GLES20.glCompileShader(idObjetShader);
 
+        //Obtention de l'id du shader
         GLES20.glGetShaderiv(idObjetShader, GLES20.GL_COMPILE_STATUS, statusCompilation, 0);
 
         if (LoggerConfig.ON){
@@ -59,10 +61,13 @@ public class ShaderHelper {
             return 0;
         }
 
+        //Attachement des 2 shaders dans un programme
         GLES20.glAttachShader(idObjetProgram, idVertexShader);
         GLES20.glAttachShader(idObjetProgram, idFragmentShader);
+        //Liaison des 2 shaders
         GLES20.glLinkProgram(idObjetProgram);
 
+        //Obtention de l'id du programme
         GLES20.glGetProgramiv(idObjetProgram, GLES20.GL_LINK_STATUS, statusLien, 0);
         if (statusLien[0] == 0){
             GLES20.glDeleteProgram(idObjetProgram);
@@ -81,13 +86,15 @@ public class ShaderHelper {
     public static boolean validationProgram(int idObjetProgram){
         final int[] statusValidation = new int[1];
 
+        //Validation du programme
         GLES20.glValidateProgram(idObjetProgram);
+        //Obtention de l'id du programme
         GLES20.glGetProgramiv(idObjetProgram, GLES20.GL_VALIDATE_STATUS, statusValidation, 0);
         Log.v(Tag, "Résultat de la validation du programme : " + statusValidation[0] + "\nLog : " + GLES20.glGetProgramInfoLog(idObjetProgram));
 
         return statusValidation[0] != 0;
     }
-    public static int consProgram(String vertexSourceShader, String fragmentSourceShader){
+    public static int constructionProgram(String vertexSourceShader, String fragmentSourceShader){
         int program, vertexShader, fragmentShader;
 
         vertexShader = compilShaderVertex(vertexSourceShader);

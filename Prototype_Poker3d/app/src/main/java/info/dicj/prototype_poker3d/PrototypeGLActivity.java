@@ -20,24 +20,25 @@ public class PrototypeGLActivity extends AppCompatActivity {
         GLVue = K;
         checkRender = true;
 
+        //Affectation des listeners des boutons
         bouton = (Button)findViewById(R.id.Test1);
         bouton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                GLVue.mRenderer.ajoutCarte();
+                GLVue.RendererOpenGL.ajoutCube2();
             }
         });
 
         bouton = (Button)findViewById(R.id.Test2);
         bouton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                GLVue.mRenderer.supprimListe();
+                GLVue.RendererOpenGL.supprimListe();
             }
         });
 
         bouton = (Button)findViewById(R.id.Test5);
         bouton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                GLVue.mRenderer.ajoutCube();
+                GLVue.RendererOpenGL.ajoutCube();
             }
         });
     }

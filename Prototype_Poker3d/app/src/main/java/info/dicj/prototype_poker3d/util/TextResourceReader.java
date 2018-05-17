@@ -18,9 +18,9 @@ public class TextResourceReader {
         InputStream inputStream;
         InputStreamReader inputReader;
         BufferedReader readerB;
-
         String ligneT;
 
+        //Simple bloc try/catch qui lit le fichier et écrie chacune des lignes dans un StringBuilder qui sera retourné, assumant aucune erreur lors de la lecture.
         try {
             inputStream = contexte.getResources().openRawResource(idResource);
             inputReader = new InputStreamReader(inputStream);

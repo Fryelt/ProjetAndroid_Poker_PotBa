@@ -6,8 +6,8 @@ package info.dicj.prototype_poker3d;
 
 public class Constantes {
     public static final int nbrBytesFloat = 4;
-    public static final int mPositionDataSize = 3;
-    public static final int mColorDataSize = 3;
-    public static final int mNormalDataSize = 3;
-    public static final int mTextureCoordinateDataSize = 2;
+    public static final int PositionDataSize = 3;
+    public static final int ColorDataSize = 3;
+    public static final int NormalDataSize = 3;
+    public static final int TextureCoordinateDataSize = 2;
 }

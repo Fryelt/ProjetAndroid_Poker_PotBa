@@ -9,6 +9,9 @@ import info.dicj.prototype_poker3d.util.Geometrie;
 
 /**
  * Created by PotBa1632703 on 2018-03-28.
+ * À noter : cette classe, pour le moment, ne porte pas trop d'utilité, servant à
+ * la construction d'objets complexes, qui ne fonctionnent pas pour le moment à cause
+ * de l'implémentation des textures.
  */
 
 

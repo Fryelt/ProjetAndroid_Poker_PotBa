@@ -14,6 +14,7 @@ public class Main extends AppCompatActivity {
 
         GLVue = new PrototypeGLSurfaceView(this);
         setContentView(GLVue);
+        //Actuellement, on ne tient pas en compte les différents cas qui ne tourneraient pas le bool à false, alors on le met à true
         checkRender = true;
     }
     @Override

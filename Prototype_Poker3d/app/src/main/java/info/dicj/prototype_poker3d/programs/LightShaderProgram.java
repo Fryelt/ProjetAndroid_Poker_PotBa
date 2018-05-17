@@ -24,6 +24,7 @@ public class LightShaderProgram extends ShaderProgram {
     public LightShaderProgram(Context contexte) {
         super(contexte, R.raw.pixel_vertex_shader, R.raw.pixel_fragment_shader);
 
+        //Calcul des uniformes et localisations d es propriétés
         uMVPMatrixLocation = GLES20.glGetUniformLocation(program, U_MVPMatrix);
         uMVMatrixLocation = GLES20.glGetUniformLocation(program, U_MVMatrix);
         uLightPosition = GLES20.glGetUniformLocation(program, U_LightPos);
@@ -31,6 +32,7 @@ public class LightShaderProgram extends ShaderProgram {
         aColorLocation = GLES20.glGetAttribLocation(program, A_Color);
         aNormalLocation = GLES20.glGetAttribLocation(program, A_Normal);
 
+        //Calcul des infos pour la texture
         uTexture = GLES20.glGetUniformLocation(program, U_Texture);
         aTexCoordinate = GLES20.glGetAttribLocation(program, A_TexCoordinate);
 

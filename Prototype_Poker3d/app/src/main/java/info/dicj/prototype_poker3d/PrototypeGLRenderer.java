@@ -15,11 +15,9 @@ import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import info.dicj.prototype_poker3d.objets.Carte;
+import info.dicj.prototype_poker3d.objets.Cube2;
 import info.dicj.prototype_poker3d.objets.Cube;
-import info.dicj.prototype_poker3d.objets.Jeton;
 import info.dicj.prototype_poker3d.objets.baseObjet;
-import info.dicj.prototype_poker3d.programs.ColorShaderProgram;
 import info.dicj.prototype_poker3d.programs.LightDotShaderProgram;
 import info.dicj.prototype_poker3d.programs.LightShaderProgram;
 import info.dicj.prototype_poker3d.util.Couleur;
@@ -34,15 +32,19 @@ import info.dicj.prototype_poker3d.util.TextureHelper;
     public class PrototypeGLRenderer implements GLSurfaceView.Renderer {
     private final Context contexte;
 
+    //Variable d'objet pour les mouvements
     private boolean ObjetPresseB = false;
-    //private Geometrie.Point posJetonTouch;
+    //
+    private int texture;
 
-    private Jeton jetonP, jetonA, jetonB;
+    //Objets
+    //private Jeton jetonP, jetonA, jetonB;
     private Cube cubeA;
-    private Carte carteA;
+    private Cube2 cubeB;
     private List<baseObjet> listeO = new ArrayList<baseObjet>();
     private baseObjet objetPresse;
 
+    //Matrices de projection, de vue et de modèle
     private final float[] projectionMatrixP = new float[16];
     private final float[] viewMatrixP = new float[16];
     private final float[] viewProjectionMatrixP = new float[16];
@@ -50,58 +52,49 @@ import info.dicj.prototype_poker3d.util.TextureHelper;
     private final float[] modelViewProjectionMatrixP = new float[16];
     private final float[] invertedViewProjectionMatrixP = new float[16];
 
+    //Matrices des lumières
     private float[] modelLumiereMatrixP = new float[16];
-
     private final float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
     private final float[] mLightPosInWorldSpace = new float[4];
     private final float[] mLightPosInEyeSpace = new float[4];
 
+    //Buffers du cube1
     private FloatBuffer mCubePositions;
     private FloatBuffer mCubeColors;
     private FloatBuffer mCubeNormals;
     private FloatBuffer mCubeTextureCoordinates;
 
+    //Buffers du cube2
     private FloatBuffer mCubePositions2;
     private FloatBuffer mCubeColors2;
     private FloatBuffer mCubeNormals2;
     private FloatBuffer mCubeTextureCoordinates2;
 
-    //private ColorShaderProgram colorProgram;
-    //private TextureShaderProgram textureProgram;
+    //Programmes
     private LightDotShaderProgram lumierePointProgram;
     private LightShaderProgram textureProgram;
 
-    private int texture;
-
-
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-        //Couleur du fond
+        //Couleur du fond + Nettoyage
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+        //Permettre le cull_face pour les textures
         GLES20.glEnable(GLES20.GL_CULL_FACE);
-        //Rayon, Hauteur, nbrPoints, position, couleur
 
-        //jetonP = new Jeton(0.18f, 0.035f, 18, new Geometrie.Point(0f, 0.03f / 2f, 0.4f), new Couleur(0f, 0f, 1f));
-        //jetonA = new Jeton(0.10f, 0.025f, 12, new Geometrie.Point(0.1f, 0.015f / 2f, -0.2f), new Couleur(1f, 1f, 0f));
-        //jetonB = new Jeton(0.14f, 0.030f, 32, new Geometrie.Point(0.5f, 0.025f / 2f, 0.3f), new Couleur(0f, 1f, 1f));
-
+        //Création objets
         cubeA = new Cube(1.0f, new Geometrie.Point(0.3f, 0.2f, 0.1f), new Couleur(0.5f, 1f, 0.5f));
+        cubeB = new Cube2(0.3f, 0.7f, new Geometrie.Point(0.0f, 0.2f, 0f), new Couleur(0.3f, 0.9f, 0.3f));
 
-        carteA = new Carte(0.3f, 0.7f, new Geometrie.Point(0.0f, 0.2f, 0f), new Couleur(0.3f, 0.9f, 0.3f));
-
-        //listeO.add(jetonA);
-        //listeO.add(jetonB);
-        //listeO.add(jetonP);
+        //Ajout objets à la liste
         listeO.add(cubeA);
-        listeO.add(carteA);
+        listeO.add(cubeB);
 
-        //textureProgram = new TextureShaderProgram(contexte);
-        //colorProgram = new ColorShaderProgram(contexte);
+        //Création programmes
         textureProgram = new LightShaderProgram(contexte);
         lumierePointProgram = new LightDotShaderProgram(contexte);
-        //textureProgram = new TextureShaderProgram(contexte);
 
+        //Instance des buffers pour le cube
         mCubePositions = ByteBuffer.allocateDirect(cubeA.donneePos.length * Constantes.nbrBytesFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         mCubePositions.put(cubeA.donneePos).position(0);
@@ -118,31 +111,33 @@ import info.dicj.prototype_poker3d.util.TextureHelper;
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         mCubeTextureCoordinates.put(cubeA.donneeCoordText).position(0);
 
-        ///
-
-        mCubePositions2 = ByteBuffer.allocateDirect(carteA.donneePos.length * Constantes.nbrBytesFloat)
+        //Instance des buffers pour l'autre cube
+        mCubePositions2 = ByteBuffer.allocateDirect(cubeB.donneePos.length * Constantes.nbrBytesFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mCubePositions2.put(carteA.donneePos).position(0);
+        mCubePositions2.put(cubeB.donneePos).position(0);
 
-        mCubeColors2 = ByteBuffer.allocateDirect(carteA.donneeCouleur.length * Constantes.nbrBytesFloat)
+        mCubeColors2 = ByteBuffer.allocateDirect(cubeB.donneeCouleur.length * Constantes.nbrBytesFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mCubeColors2.put(carteA.donneeCouleur).position(0);
+        mCubeColors2.put(cubeB.donneeCouleur).position(0);
 
-        mCubeNormals2 = ByteBuffer.allocateDirect(carteA.donneeNormal.length * Constantes.nbrBytesFloat)
+        mCubeNormals2 = ByteBuffer.allocateDirect(cubeB.donneeNormal.length * Constantes.nbrBytesFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mCubeNormals2.put(carteA.donneeNormal).position(0);
+        mCubeNormals2.put(cubeB.donneeNormal).position(0);
 
-        mCubeTextureCoordinates2 = ByteBuffer.allocateDirect(carteA.donneeCoordText.length * Constantes.nbrBytesFloat)
+        mCubeTextureCoordinates2 = ByteBuffer.allocateDirect(cubeB.donneeCoordText.length * Constantes.nbrBytesFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mCubeTextureCoordinates2.put(carteA.donneeCoordText).position(0);
+        mCubeTextureCoordinates2.put(cubeB.donneeCoordText).position(0);
 
+        //Instance de la texture
         texture = TextureHelper.loadTexture(contexte, R.drawable.test);
     }
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
+        //Association des limites pour la nouvelle surface
         GLES20.glViewport(0,0,width,height);
 
+        //Instance des matrices de vision
         MatrixHelper.perspectiveM(projectionMatrixP, 45, (float) width / (float) height, 1f, 10f);
         Matrix.setLookAtM(viewMatrixP, 0, 0f, 1.2f, 3.2f, 0f, 0f, 0f, 0f, 1f, 0f);
     }
@@ -152,95 +147,92 @@ import info.dicj.prototype_poker3d.util.TextureHelper;
         //Recoloration du fond d'écran
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
+        //Variables pour la rotation du point de lumière
         long time = SystemClock.uptimeMillis() % 10000L;
         float degre = (360.0f / 10000.0f) * ((int) time);
 
-
-
+        //Utilisation du programme de texture
         textureProgram.utilProgram();
-
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture);
-
         GLES20.glUniform1i(textureProgram.getTexture(), 0);
 
+        //Affecation du point lumineux
         Matrix.setIdentityM(modelLumiereMatrixP, 0);
         Matrix.translateM(modelLumiereMatrixP, 0, 0.0f, 0.0f, -5.0f);
         Matrix.rotateM(modelLumiereMatrixP, 0, degre, 0.0f, 1.0f, 0.0f);
         Matrix.translateM(modelLumiereMatrixP, 0, 0.0f, 0.0f, 2.0f);
 
+        //Multiplication des matrices de positions de la lumière
         Matrix.multiplyMV(mLightPosInWorldSpace, 0, modelLumiereMatrixP, 0, mLightPosInModelSpace, 0);
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, viewMatrixP, 0, mLightPosInWorldSpace, 0);
 
+        //Multiplication de la matrice pour les évènements ontouch
         Matrix.multiplyMM(viewProjectionMatrixP, 0, projectionMatrixP, 0, viewMatrixP, 0);
         Matrix.invertM(invertedViewProjectionMatrixP, 0, viewProjectionMatrixP, 0);
 
-
-
+        //Écriture des objets dans la liste
         for(baseObjet j : listeO){
-            //colorProgram.utilProgram();
             posObjet(j.position);
-            //colorProgram.setUniforms(modelViewProjectionMatrixP, j.couleur);
-            //j.bindData(colorProgram);
             lumiereObjet(j);
-            //j.ecriture();
         }
 
+        //Écriture point lumineux
         ajoutLumiere();
     }
 
     public void lumiereObjet(baseObjet j) {
+        //Utilisation du programe de texture
         textureProgram.utilProgram();
 
-        //j.setVertex(textureProgram);
-
         if (j.getClass().getSimpleName().equals("Cube")){
+            //Affectation des données selon les buffers
             mCubePositions.position(0);
-            GLES20.glVertexAttribPointer(textureProgram.getPositionLocation(), Constantes.mPositionDataSize, GLES20.GL_FLOAT, false, 0, mCubePositions);
+            GLES20.glVertexAttribPointer(textureProgram.getPositionLocation(), Constantes.PositionDataSize, GLES20.GL_FLOAT, false, 0, mCubePositions);
             GLES20.glEnableVertexAttribArray(textureProgram.getPositionLocation());
 
             mCubeColors.position(0);
-            GLES20.glVertexAttribPointer(textureProgram.getColorLocation(), Constantes.mColorDataSize, GLES20.GL_FLOAT, false, 0, mCubeColors);
+            GLES20.glVertexAttribPointer(textureProgram.getColorLocation(), Constantes.ColorDataSize, GLES20.GL_FLOAT, false, 0, mCubeColors);
             GLES20.glEnableVertexAttribArray(textureProgram.getColorLocation());
 
             mCubeNormals.position(0);
-            GLES20.glVertexAttribPointer(textureProgram.getNormalLocation(), Constantes.mNormalDataSize, GLES20.GL_FLOAT, false, 0, mCubeNormals);
+            GLES20.glVertexAttribPointer(textureProgram.getNormalLocation(), Constantes.NormalDataSize, GLES20.GL_FLOAT, false, 0, mCubeNormals);
             GLES20.glEnableVertexAttribArray(textureProgram.getNormalLocation());
 
             mCubeTextureCoordinates.position(0);
-            GLES20.glVertexAttribPointer(textureProgram.getTexCoordinate(), Constantes.mTextureCoordinateDataSize, GLES20.GL_FLOAT, false, 0, mCubeTextureCoordinates);
+            GLES20.glVertexAttribPointer(textureProgram.getTexCoordinate(), Constantes.TextureCoordinateDataSize, GLES20.GL_FLOAT, false, 0, mCubeTextureCoordinates);
             GLES20.glEnableVertexAttribArray(textureProgram.getTexCoordinate());
         }
-        if (j.getClass().getSimpleName().equals("Carte")){
+
+        if (j.getClass().getSimpleName().equals("Cube2")){
+            //Affectation des données selon les buffers
             mCubePositions2.position(0);
-            GLES20.glVertexAttribPointer(textureProgram.getPositionLocation(), Constantes.mPositionDataSize, GLES20.GL_FLOAT, false, 0, mCubePositions2);
+            GLES20.glVertexAttribPointer(textureProgram.getPositionLocation(), Constantes.PositionDataSize, GLES20.GL_FLOAT, false, 0, mCubePositions2);
             GLES20.glEnableVertexAttribArray(textureProgram.getPositionLocation());
 
             mCubeColors2.position(0);
-            GLES20.glVertexAttribPointer(textureProgram.getColorLocation(), Constantes.mColorDataSize, GLES20.GL_FLOAT, false, 0, mCubeColors2);
+            GLES20.glVertexAttribPointer(textureProgram.getColorLocation(), Constantes.ColorDataSize, GLES20.GL_FLOAT, false, 0, mCubeColors2);
             GLES20.glEnableVertexAttribArray(textureProgram.getColorLocation());
 
             mCubeNormals2.position(0);
-            GLES20.glVertexAttribPointer(textureProgram.getNormalLocation(), Constantes.mNormalDataSize, GLES20.GL_FLOAT, false, 0, mCubeNormals2);
+            GLES20.glVertexAttribPointer(textureProgram.getNormalLocation(), Constantes.NormalDataSize, GLES20.GL_FLOAT, false, 0, mCubeNormals2);
             GLES20.glEnableVertexAttribArray(textureProgram.getNormalLocation());
 
             mCubeTextureCoordinates2.position(0);
-            GLES20.glVertexAttribPointer(textureProgram.getTexCoordinate(), Constantes.mTextureCoordinateDataSize, GLES20.GL_FLOAT, false, 0, mCubeTextureCoordinates2);
+            GLES20.glVertexAttribPointer(textureProgram.getTexCoordinate(), Constantes.TextureCoordinateDataSize, GLES20.GL_FLOAT, false, 0, mCubeTextureCoordinates2);
             GLES20.glEnableVertexAttribArray(textureProgram.getTexCoordinate());
         }
 
-
+        //Multiplications pour la matrice MVP
         Matrix.multiplyMM(modelViewProjectionMatrixP, 0, viewMatrixP, 0, modelMatrixP, 0);
-
         GLES20.glUniformMatrix4fv(textureProgram.getMVMatrixLocation(), 1, false, modelViewProjectionMatrixP, 0);
-
         Matrix.multiplyMM(modelViewProjectionMatrixP, 0, projectionMatrixP, 0, modelViewProjectionMatrixP, 0);
-
         GLES20.glUniformMatrix4fv(textureProgram.getMVPMatrixLocation(), 1, false, modelViewProjectionMatrixP, 0);
 
+        //Uniformisation de la lumière
         GLES20.glUniform3f(textureProgram.getLightPosition(), mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
 
+        //Écriture de l'objet
         j.ecriture();
     }
 
@@ -259,10 +251,10 @@ import info.dicj.prototype_poker3d.util.TextureHelper;
         GLES20.glDrawArrays(GLES20.GL_POINTS, 0, 1);
     }
 
-    public void ajoutCarte(){
+    public void ajoutCube2(){
         //Rayon, Hauteur, nbrPoints, positions, couleurs
         Couleur cl = new Couleur(1f, 0f, 1f);
-        listeO.add(new Carte(carteA.longueur, carteA.hauteur, carteA.position, cl));
+        listeO.add(new Cube2(cubeB.longueur, cubeB.hauteur, cubeB.position, cl));
     }
 
     public void ajoutCube(){
@@ -276,33 +268,25 @@ import info.dicj.prototype_poker3d.util.TextureHelper;
     }
 
     private void posObjet(Geometrie.Point pos){
+        //Position de l'objet dans la matrice modèle
         Matrix.setIdentityM(modelMatrixP, 0);
         Matrix.translateM(modelMatrixP, 0, pos.px, pos.py, pos.pz);
-        //Matrix.multiplyMM(modelViewProjectionMatrixP, 0, viewProjectionMatrixP, 0, modelMatrixP, 0);
+        //Multiplication dans la matrice MVP
+        Matrix.multiplyMM(modelViewProjectionMatrixP, 0, viewProjectionMatrixP, 0, modelMatrixP, 0);
     }
-
-    public static int loadShader(int type, String shaderCode){
-
-        // vertex shader type (GLES20.GL_VERTEX_SHADER) fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shader = GLES20.glCreateShader(type);
-
-        // add the source code to the shader and compile it
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-
-        return shader;
-    }
-
 
     public PrototypeGLRenderer(Context contexte){
         this.contexte = contexte;
     }
 
     public void handleTouchPress(float normX, float normY) {
+        //On transforme les coordonnées x/y que l'utilisateur envoie en
         Geometrie.Ray rayonL =  convert2DPointRay(normX, normY);
 
         for (baseObjet j : listeO){
+            //On crée une sphère autour de l'objet afin
             Geometrie.Sphere sphereJetonP = new Geometrie.Sphere(j.position, (j.position.py / 2f)*3);
+            //On vérifie si l'objet est pressé en
             ObjetPresseB = Geometrie.intersect(sphereJetonP, rayonL);
             if (ObjetPresseB){
                 objetPresse = j;
@@ -314,22 +298,24 @@ import info.dicj.prototype_poker3d.util.TextureHelper;
     private Geometrie.Ray convert2DPointRay(float normX, float normY) {
         final float[] WPointProche, WPointLoin;
         Geometrie.Point RPointProche, RPointLoin;
-
-
         final float[] ndcPointProche = {normX, normY, -1, 1};
         final float[] ndcPointLoin = {normX, normY, 1, 1};
         WPointProche = new float[4];
         WPointLoin = new float[4];
 
+        //Multiplication de matrices vers les tableaux des point W
         Matrix.multiplyMV(WPointProche, 0, invertedViewProjectionMatrixP, 0, ndcPointProche, 0);
         Matrix.multiplyMV(WPointLoin, 0, invertedViewProjectionMatrixP, 0, ndcPointLoin, 0);
 
+        //Division appropriée des vecteurs
         divByW(WPointProche);
         divByW(WPointLoin);
 
+        //Détermination des points basé sur les tableaux W
         RPointProche = new Geometrie.Point(WPointProche[0], WPointProche[1], WPointProche[2]);
         RPointLoin = new Geometrie.Point(WPointLoin[0], WPointLoin[1], WPointLoin[2]);
 
+        //Retour d'un rayon basé sur les points R
         return new Geometrie.Ray(RPointProche, Geometrie.vecteurB(RPointProche, RPointLoin));
     }
     private void divByW(float[] vecteur){
@@ -340,12 +326,16 @@ import info.dicj.prototype_poker3d.util.TextureHelper;
 
     public void handleTouchDrag(float normX, float normY) {
         if (ObjetPresseB){
+            //Création d'un rayon à partir des coordonnées X et Y données par l'utilisateur
             Geometrie.Ray rayonL = convert2DPointRay(normX, normY);
 
+            //Création d'un plan horizontal de l'environnement openGL
             Geometrie.Plane plan = new Geometrie.Plane(new Geometrie.Point(0,0,0), new Geometrie.Vecteur(0,1,0));
 
+            //Détermination du point selon l'intersection entre le plan et le rayon
             Geometrie.Point pointT = Geometrie.intersectP(rayonL, plan);
 
+            //Affectation de la position de l'objet pressé
             objetPresse.position = new Geometrie.Point(pointT.px, objetPresse.position.py, pointT.pz);
         }
     }

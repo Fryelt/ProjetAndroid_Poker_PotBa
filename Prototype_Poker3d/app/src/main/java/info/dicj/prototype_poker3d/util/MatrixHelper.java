@@ -9,6 +9,7 @@ public class MatrixHelper {
         final float radAngle = (float) (FovYDeg * Math.PI / 180);
         final float a = (float) (1.0 / Math.tan(radAngle / 2.0));
 
+        //Basée sur une formule mathématique sur les matrices quant à la perception en 3d
         m[0] = a / aspect;
         m[1] = 0f;
         m[2] = 0f;

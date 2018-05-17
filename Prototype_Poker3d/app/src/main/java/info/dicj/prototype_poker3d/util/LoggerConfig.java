@@ -5,5 +5,6 @@ package info.dicj.prototype_poker3d.util;
  */
 
 public class LoggerConfig {
+    //Le logger est toujours on pour le moment.
     public static final boolean ON = true;
 }

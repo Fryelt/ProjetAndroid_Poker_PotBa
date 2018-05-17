@@ -6,9 +6,7 @@ import java.nio.ByteBuffer;
 
 import info.dicj.prototype_poker3d.Constantes;
 import info.dicj.prototype_poker3d.donnee.VertexArray;
-import info.dicj.prototype_poker3d.programs.ColorShaderProgram;
 import info.dicj.prototype_poker3d.programs.LightShaderProgram;
-import info.dicj.prototype_poker3d.programs.TextureShaderProgram;
 import info.dicj.prototype_poker3d.util.Couleur;
 import info.dicj.prototype_poker3d.util.Geometrie;
 
@@ -35,12 +33,6 @@ public class baseObjet{
     public float[] donneePos;
     public float[] donneeCoordText;
 
-    public void bindData(ColorShaderProgram programCouleur){
-
-    }
-    public void bindData(TextureShaderProgram programTexture){
-
-    }
     public void ecriture(){
 
     }

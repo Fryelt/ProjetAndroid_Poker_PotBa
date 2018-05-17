@@ -1,14 +1,8 @@
 <resources>
     <string name="app_name">Prototype_Poker3d</string>
-    <string name="Test1">Bouton1</string>
-    <string name="Test2">Bouton2</string>
-    <string name="Test3">Bouton3</string>
-    <string name="Test4">Bouton4</string>
-    <string name="Test5">Bouton5</string>
-    <string name="Test6">Bouton6</string>
-    <string name="Test7">Bouton7</string>
-    <string name="Test8">Bouton8</string>
-    <string name="Test9">Bouton9</string>
+    <string name="Test1">cube 1</string>
+    <string name="Test2">tout</string>
+    <string name="Test5">cube 2</string>
     <string name="TitreMenu">Menu Objets</string>
     <string name="AjoutMenu">Ajout objet</string>
     <string name="SuppresionMenu">Suppresion</string>

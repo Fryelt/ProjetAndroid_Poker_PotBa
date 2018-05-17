@@ -26,7 +26,8 @@ public class ShaderProgram {
 
     protected final int program;
     protected ShaderProgram(Context contexte,int vertexIdResourceShader, int fragmentIdResourceShader){
-        program = ShaderHelper.consProgram(TextResourceReader.lectureTextFileFromRes(contexte, vertexIdResourceShader), TextResourceReader.lectureTextFileFromRes(contexte, fragmentIdResourceShader));
+        //Création d'un program basé sur les id des shaders
+        program = ShaderHelper.constructionProgram(TextResourceReader.lectureTextFileFromRes(contexte, vertexIdResourceShader), TextResourceReader.lectureTextFileFromRes(contexte, fragmentIdResourceShader));
     }
 
     public void utilProgram(){

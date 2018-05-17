@@ -11,7 +11,7 @@ import android.view.View;
  */
 
 public class PrototypeGLSurfaceView extends GLSurfaceView {
-    protected PrototypeGLRenderer mRenderer;
+    protected PrototypeGLRenderer RendererOpenGL;
 
     public PrototypeGLSurfaceView(Context context){
         super(context);
@@ -27,7 +27,9 @@ public class PrototypeGLSurfaceView extends GLSurfaceView {
         // Contexte OpenGL version 2
         setEGLContextClientVersion(2);
 
-        mRenderer = new PrototypeGLRenderer(this.getContext());
+        //Création du renderer OpenGL
+        RendererOpenGL = new PrototypeGLRenderer(this.getContext());
+        //Création du touch listener
         setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -39,14 +41,14 @@ public class PrototypeGLSurfaceView extends GLSurfaceView {
                         queueEvent(new Runnable() {
                             @Override
                             public void run() {
-                                mRenderer.handleTouchPress(normX, normY);
+                                RendererOpenGL.handleTouchPress(normX, normY);
                             }
                         });
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE){
                         queueEvent(new Runnable() {
                             @Override
                             public void run() {
-                                mRenderer.handleTouchDrag(normX, normY);
+                                RendererOpenGL.handleTouchDrag(normX, normY);
                             }
                         });
                     }
@@ -57,6 +59,6 @@ public class PrototypeGLSurfaceView extends GLSurfaceView {
             }
         });
 
-        this.setRenderer(mRenderer);
+        this.setRenderer(RendererOpenGL);
     }
 }

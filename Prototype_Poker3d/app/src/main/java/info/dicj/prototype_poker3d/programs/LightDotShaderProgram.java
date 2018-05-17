@@ -17,6 +17,7 @@ public class LightDotShaderProgram extends ShaderProgram{
     public LightDotShaderProgram(Context contexte){
         super(contexte, R.raw.light_vertex_shader, R.raw.light_fragment_shader);
 
+        //Calcul des localisations et uniformes
         aPositionLocation = GLES20.glGetAttribLocation(program, A_Position);
         uMVPMatrixLocation = GLES20.glGetUniformLocation(program, U_MVPMatrix);
     }

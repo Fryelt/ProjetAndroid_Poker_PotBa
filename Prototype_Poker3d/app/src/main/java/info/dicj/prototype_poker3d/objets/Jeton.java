@@ -3,12 +3,13 @@ package info.dicj.prototype_poker3d.objets;
 import java.util.List;
 
 import info.dicj.prototype_poker3d.donnee.VertexArray;
-import info.dicj.prototype_poker3d.programs.ColorShaderProgram;
 import info.dicj.prototype_poker3d.util.Couleur;
 import info.dicj.prototype_poker3d.util.Geometrie;
 
 /**
  * Created by PotBa1632703 on 2018-04-02.
+ *
+ * À noter : Le jeton n'est pas utilisable à cause de l'implémentation des textures
  */
 
 public class Jeton extends baseObjet {
@@ -29,11 +30,6 @@ public class Jeton extends baseObjet {
 
         vertexArray = new VertexArray(generatedData.donneeVertex);
         ListeEcriture = generatedData.listeEcriture;
-    }
-
-    @Override
-    public void bindData(ColorShaderProgram programCouleur){
-        vertexArray.setVertexAttribPointer(0, programCouleur.getPosAttribLocation(), nbrCompPos, 0);
     }
 
     @Override
